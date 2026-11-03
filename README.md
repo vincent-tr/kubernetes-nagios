@@ -85,6 +85,30 @@ This check returns the health status of the overall cluster.
 ./check_kubernetes_api.sh [-t <TARGETSERVER> -c <CREDENTIALSFILE>] [-k <KUBE_CONFIG>]
 ```
 
+### check_kube_cronjob.sh
+
+This checks that a CronJob has succeeded recently, based on its `lastSuccessfulTime`. It also catches
+skipped runs and suspended CronJobs, which the other checks do not see.
+
+#### Usage
+```
+./check_kube_cronjob.sh -n <NAMESPACE> -j <CRONJOB> [-m <MAX_AGE_HOURS>] [-k <KUBE_CONFIG>]
+```
+
+#### Options
+```
+  -n <NAMESPACE>	# Required, namespace of the CronJob
+  -j <CRONJOB>		# Required, name of the CronJob
+  -m <MAX_AGE_HOURS>	# Critical if the last success is older than this [default: 26]
+  -k <KUBE_CONFIG>	# Path to kube config file if using kubectl
+```
+
+#### Example output
+```
+$ ./check_kube_cronjob.sh -n apps -j rpi-alpine-backup
+OK - cronjob apps/rpi-alpine-backup last succeeded 3h ago
+```
+
 ### Dependancies
 
 These scripts call the Kubernetes API, so this must be exposed to the machine running the script.
